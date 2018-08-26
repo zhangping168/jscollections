@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+  <link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
+  <title>JS: 2018 0826</title>
+   
+  
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css'>
+
+  
+</head>
+
+<body class="bg-dark text-white">
+	<header class="bg-secondary text-center p-3 mb-5">
+		<h1>WordBeater</h1>
+	</header>
+	
+	<div class="container text-center">
+		<!-- word & Input -->
+		<div class="row">
+			<div class="col-md-6 mx-auto">
+				<p class="lead">Type the given words within <span class="text-success" id="seconds">5</span> Seconds:</p>
+				<h2 class="display-2 mb-5" id="current-word">Hello</h2>
+				<input type="text" class="form-control form-control-lg" placeholder="start typing ..." id="word-input" autofocus>
+				<h4 class="mt-3" id="message"></h4>
+				
+				
+				<!-- Time & Score Column -->
+				<div class="row mt-5">
+					<div class="col-md-6">
+						<h3>Time Left: <span id="time">0</span></h3>
+					</div>
+					<div class="col-md-6">
+						<h3>Score: <span id="score">0</span></h3>
+					</div>
+				</div>
+				
+				<!-- Instructions-->
+				<div class="row mt-5">
+					<div class="col-md-12">
+						<div class="card card-body bg-secondary text-white">
+							<h5>Instructions</h5>
+							<p>Instructions context ...</p>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		
+		window.addEventListener('load', init);
+		//Globals
+		
+		const levels = {
+			easy:5,
+			medium:3,
+			hard:2
+		};
+		
+		const currentLevel = levels.medium;
+		
+		let time = currentLevel;
+		let score = 0;
+		let isPlaying;
+				
+		//DOM Elements
+		const wordInput = document.querySelector('#word-input');
+		const currentWord = document.querySelector('#current-word');
+		const scoreDisplay = document.querySelector('#score');
+		const timeDisplay = document.querySelector('#time');
+		const message = document.querySelector('#message');
+		const seconds = document.querySelector('#seconds');
+		
+		const words = ['the','cat','in', 'hat','pokemon','powerpuff','peppa','dora','itits'];		
+		
+		function init(){
+			
+			//show number of seconds in UI
+			seconds.innerHTML = currentLevel;
+			
+			showWords(words);
+			
+			wordInput.addEventListener('input', startMatch);
+			
+			setInterval(countdown, 1000);
+			
+			//check status
+			setInterval(checkStatus, 50);
+		}
+		
+		//pick & show random word
+		
+		function showWords(words){
+			
+			//generate random array index
+			
+			const ranIndex = Math.floor(Math.random() * words.length);
+			
+			currentWord.innerHTML = words[ranIndex];
+		}
+		
+		
+		function startMatch(){
+			if(matchWords()){
+				
+				wordInput.value = '';
+				time = currentLevel + 1;
+				isPlaying = true;
+				showWords(words);
+				
+				score++;
+				
+			}else{
+				console.log('Not Matches');
+			}
+			if(score <0){score=0;}
+			scoreDisplay.innerHTML = score;
+		}
+		
+		function matchWords(){
+			if(wordInput.value === currentWord.innerText){
+				message.innerHTML = 'Correct';
+				return true;
+			}else{
+				message.innerHTML = '';
+				return false;
+			}
+		}
+		
+		function countdown(){
+			if(time > 0 ){
+				//decrement
+				
+				time--;
+				
+			}else if(time === 0)
+			{
+				//game is over
+				isPlaying = false;
+			}
+			
+			//show time
+			timeDisplay.innerHTML = time;
+		}
+		
+		function checkStatus(){
+			if( !isPlaying && time === 0)
+			{
+				//game over message
+				message.innerHTML ='Game OVER!';
+				
+				//reset score
+				score = -1;
+				
+			}
+		}
+	</script>
+</body>
+
+</html>
+ 
